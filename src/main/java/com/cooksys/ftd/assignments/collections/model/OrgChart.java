@@ -46,19 +46,25 @@ public class OrgChart {
 	 * @return true if the {@code Employee} was added successfully, false otherwise
 	 */
 	public boolean addEmployee(Employee employee) {
-		if (employeeSet.contains(employee)) {
-			return false;
-		} else if (employee.hasManager() && !employeeSet.contains(employee.getManager())) {
-			employeeSet.add(employee.getManager());
-			employeeSet.add(employee);
-			return true;
-		} else if (!employee.hasManager() && (employee instanceof Manager)) {
-			employeeSet.add(employee);
-			return true;
-		} else {
-			return false;
-		}
-	}
+		if ((employee == null) || employeeSet.contains(employee)) {
+            return false;
+        }
+        else if (employee.hasManager()) {
+            while (employee.hasManager()) {
+                employeeSet.add(employee.getManager());
+                employeeSet.add(employee);
+                employee = employee.getManager();
+            }
+            return true;
+        }
+        else if (!employee.hasManager()) {
+            if (employee instanceof Manager) {
+                employeeSet.add(employee);
+                return true;
+            }
+        }
+        return false;
+    }
 
 	/**
 	 * TODO: Implement this method <br>
@@ -87,7 +93,7 @@ public class OrgChart {
 	 *         {@code OrgChart}
 	 */
 	public Set<Employee> getAllEmployees() {
-		return employeeSet;
+		return new HashSet<>(employeeSet);
 	}
 
 	/**
@@ -102,7 +108,13 @@ public class OrgChart {
 	 *         if no {@code Manager}s have been added to the {@code OrgChart}
 	 */
 	public Set<Manager> getAllManagers() {
-		return managerSet;
+		Set<Manager> managers = new HashSet<>();
+		employeeSet.forEach(employee -> {
+			if (employee instanceof Manager) {
+				managers.add((Manager) employee);
+			}
+		});
+		return managers;
 	}
 
 	/**
@@ -128,14 +140,15 @@ public class OrgChart {
 	 *         are no subordinates for the given {@code Manager}
 	 */
 	public Set<Employee> getDirectSubordinates(Manager manager) {
-		Set<Employee> employeesWithManager = new HashSet<>();
-		for (Employee e : employeeSet) {
-			if ((e.hasManager()) && (e.getManager() == manager)) {
-				employeesWithManager.add(e);
-
-			}
-		}
-		return employeesWithManager;
+        Set<Employee> employees = new HashSet<>();
+        employeeSet.forEach(employee -> {
+            if (employee.hasManager() ) {
+                if (employee.getManager().getName().equals(manager.getName())){
+                    employees.add(employee);
+                }
+            }
+        });
+        return employees;
 	}
 
 	/**
@@ -160,11 +173,11 @@ public class OrgChart {
 	 */
 	public Map<Manager, Set<Employee>> getFullHierarchy() {
 		Map<Manager, Set<Employee>> employeeOrgHierarchy = new HashMap<>();
-		for (Manager manager : managerSet) {
-			employeeOrgHierarchy.put(manager, getDirectSubordinates(manager));
-		}
+		employeeSet.forEach(employee -> {
+			if (employee instanceof Manager) {
+				employeeOrgHierarchy.put((Manager) employee, getDirectSubordinates((Manager) employee));
+			}
+		});
 		return employeeOrgHierarchy;
-
-	}
-	
+	}	
 }

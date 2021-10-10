@@ -1,9 +1,5 @@
 package com.cooksys.ftd.assignments.collections.model;
 
-import com.cooksys.ftd.assignments.collections.model.Employee;
-import com.cooksys.ftd.assignments.collections.model.Manager;
-import com.cooksys.ftd.assignments.collections.util.MissingImplementationException;
-
 import java.util.*;
 
 public class OrgChart {
@@ -18,7 +14,6 @@ public class OrgChart {
 	// not working out!
 
 	private Set<Employee> employeeSet = new HashSet<>();
-	private Set<Manager> managerSet = new HashSet<>();
 
 	/**
 	 * TODO: Implement this method <br>
@@ -47,24 +42,22 @@ public class OrgChart {
 	 */
 	public boolean addEmployee(Employee employee) {
 		if ((employee == null) || employeeSet.contains(employee)) {
-            return false;
-        }
-        else if (employee.hasManager()) {
-            while (employee.hasManager()) {
-                employeeSet.add(employee.getManager());
-                employeeSet.add(employee);
-                employee = employee.getManager();
-            }
-            return true;
-        }
-        else if (!employee.hasManager()) {
-            if (employee instanceof Manager) {
-                employeeSet.add(employee);
-                return true;
-            }
-        }
-        return false;
-    }
+			return false;
+		} else if (employee.hasManager()) {
+			while (employee.hasManager()) {
+				employeeSet.add(employee.getManager());
+				employeeSet.add(employee);
+				employee = employee.getManager();
+			}
+			return true;
+		} else if (!employee.hasManager()) {
+			if (employee instanceof Manager) {
+				employeeSet.add(employee);
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * TODO: Implement this method <br>
@@ -109,11 +102,11 @@ public class OrgChart {
 	 */
 	public Set<Manager> getAllManagers() {
 		Set<Manager> managers = new HashSet<>();
-		employeeSet.forEach(employee -> {
+		for (Employee employee : employeeSet) {
 			if (employee instanceof Manager) {
 				managers.add((Manager) employee);
 			}
-		});
+		}
 		return managers;
 	}
 
@@ -140,15 +133,15 @@ public class OrgChart {
 	 *         are no subordinates for the given {@code Manager}
 	 */
 	public Set<Employee> getDirectSubordinates(Manager manager) {
-        Set<Employee> employees = new HashSet<>();
-        employeeSet.forEach(employee -> {
-            if (employee.hasManager() ) {
-                if (employee.getManager().getName().equals(manager.getName())){
-                    employees.add(employee);
-                }
-            }
-        });
-        return employees;
+		Set<Employee> employees = new HashSet<>();
+		employeeSet.forEach(employee -> {
+			if (employee.hasManager()) {
+				if (employee.getManager().getName().equals(manager.getName())) {
+					employees.add(employee);
+				}
+			}
+		});
+		return employees;
 	}
 
 	/**
@@ -179,5 +172,5 @@ public class OrgChart {
 			}
 		});
 		return employeeOrgHierarchy;
-	}	
+	}
 }

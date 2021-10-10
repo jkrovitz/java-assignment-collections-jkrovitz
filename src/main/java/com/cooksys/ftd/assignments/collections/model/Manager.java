@@ -1,10 +1,6 @@
 package com.cooksys.ftd.assignments.collections.model;
 
-import com.cooksys.ftd.assignments.collections.util.MissingImplementationException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * TODO: Implement this class <br>
@@ -124,7 +120,6 @@ public class Manager implements Employee {
 		Manager other = (Manager) obj;
 		return Objects.equals(manager, other.manager) && Objects.equals(name, other.name);
 	}
-	
 
 	// TODO [OPTIONAL]: Consider adding a custom .toString() method here if you want
 	// to debug your code with System.out.println() statements
